@@ -25,16 +25,17 @@ print ("Welcome to Simon Says!")
 sequence = []
 
 #Flash the randomly selected LED to the user
-led = randint(0, 1)
-if led == 0:
-    sequence.append(LEFT_LED)
+randNum = randint(0, 1)
+
+if randNum == 0:
+    led = LEFT_LED
 else:
-    sequence.append(RIGHT_LED)
+    led = RIGHT_LED
 
 #Flash the sequence for the player
-GPIO.output(i, GPIO.HIGH)
+GPIO.output(led, GPIO.HIGH)
 time.sleep(FLASH_TIME)
-GPIO.output(i, GPIO.LOW)
+GPIO.output(led, GPIO.LOW)
 time.sleep(FLASH_TIME)
 
 print ("Thanks for playing!")
