@@ -10,17 +10,18 @@ GPIO.setmode(GPIO.BCM)
 #Defind the pins that are used for the LEDs and switches
 LEFT_LED = 16
 RIGHT_LED = 21
-LEFT_BTN = 19
-RIGHT_BTN = 26
+LEFT_SW = 19
+RIGHT_SW = 26
 FLASH_TIME = 1
+TIMEOUT_TIME = 2
 
-switchLEDMap = { LEFT_LED:LEFT_BTN, RIGHT_LED:RIGHT_BTN }
+switchLEDMap = { LEFT_LED:LEFT_SW, RIGHT_LED:RIGHT_SW }
 
 #Set the pins as inputs and outputs
 GPIO.setup(LEFT_LED, GPIO.OUT)
 GPIO.setup(RIGHT_LED, GPIO.OUT)
-GPIO.setup(LEFT_BTN, GPIO.IN, GPIO.PUD_UP)
-GPIO.setup(RIGHT_BTN, GPIO.IN, GPIO.PUD_UP)
+GPIO.setup(LEFT_SW, GPIO.IN, GPIO.PUD_UP)
+GPIO.setup(RIGHT_SW, GPIO.IN, GPIO.PUD_UP)
 
 sequence = []
 gameOver = False
@@ -43,33 +44,33 @@ while gameOver == False:
 
   for i in sequence:
     btnPressed = 0
-    
+
     #Read inputs
-    GPIO.add_event_detect(LEFT_BTN, GPIO.FALLING)
-    GPIO.add_event_detect(RIGHT_BTN, GPIO.FALLING)
-  
+    GPIO.add_event_detect(LEFT_SW, GPIO.FALLING)
+    GPIO.add_event_detect(RIGHT_SW, GPIO.FALLING)
+
     startTime = time.time()
-  
+
     while True:
-      if GPIO.event_detected(LEFT_BTN):
+      if GPIO.event_detected(LEFT_SW):
         print ("Left Button Pressed")
-        btnPressed = LEFT_BTN
+        btnPressed = LEFT_SW
         break
-      if GPIO.event_detected(RIGHT_BTN):
+      if GPIO.event_detected(RIGHT_SW):
         print ("Right Button Pressed")
-        btnPressed = RIGHT_BTN
+        btnPressed = RIGHT_SW
         break
-      if time.time() - startTime > 2*FLASH_TIME:
+      if time.time() - startTime > TIMEOUT_TIME:
         print ("Time is up!!")
         gameOver = True
         break
       time.sleep(0.0001)
-    
-    GPIO.remove_event_detect(LEFT_BTN)
-    GPIO.remove_event_detect(RIGHT_BTN)
-    
+
+    GPIO.remove_event_detect(LEFT_SW)
+    GPIO.remove_event_detect(RIGHT_SW)
+
     time.sleep(0.5)
-      
+
     #Does input match the sequence step?
     if btnPressed != switchLEDMap[i]:
       print ("Game Over")
