@@ -15,6 +15,8 @@ RIGHT_SW = 26
 FLASH_TIME = 1
 TIMEOUT_TIME = 2
 
+switchLEDMap = { LEFT_LED:LEFT_SW, RIGHT_LED:RIGHT_SW }
+
 #Set the pins as inputs and outputs
 GPIO.setup(LEFT_LED, GPIO.OUT)
 GPIO.setup(RIGHT_LED, GPIO.OUT)
@@ -34,7 +36,7 @@ else:
 #Flash the sequence for the player
 GPIO.output(led, GPIO.HIGH)
 time.sleep(FLASH_TIME)
-GPIO.output(led), GPIO.LOW)
+GPIO.output(led, GPIO.LOW)
 time.sleep(FLASH_TIME)
 
 btnPressed = 0
@@ -64,9 +66,9 @@ GPIO.remove_event_detect(LEFT_SW)
 GPIO.remove_event_detect(RIGHT_SW)
 
 #Does input match the sequence step?
-if btnPressed != switchLEDMap[i]:
+if btnPressed != switchLEDMap[led]:
     print ("You Lost")
-else
+else:
     print ("You Win!")
 
 print ("Thanks for playing!")
