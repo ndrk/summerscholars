@@ -12,6 +12,7 @@ LEFT_LED = 16
 RIGHT_LED = 21
 LEFT_SW = 19
 RIGHT_SW = 26
+
 FLASH_TIME = 1
 TIMEOUT_TIME = 2
 
@@ -33,7 +34,8 @@ if randNum == 0:
 else:
     led = RIGHT_LED
 
-#Flash the sequence for the player
+#Flash the LED for the player
+print ("Flashing LED...")
 GPIO.output(led, GPIO.HIGH)
 time.sleep(FLASH_TIME)
 GPIO.output(led, GPIO.LOW)
@@ -47,15 +49,13 @@ GPIO.add_event_detect(RIGHT_SW, GPIO.FALLING)
 
 startTime = time.time()
 
-while True:
+while btnPressed == 0:
     if GPIO.event_detected(LEFT_SW):
         print ("Left Button Pressed")
         btnPressed = LEFT_SW
-        break
     if GPIO.event_detected(RIGHT_SW):
         print ("Right Button Pressed")
         btnPressed = RIGHT_SW
-        break
     if time.time() - startTime > TIMEOUT_TIME:
         print ("Time is up!!")
         gameOver = True
