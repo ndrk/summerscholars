@@ -12,10 +12,14 @@ LEFT_LED = 16
 RIGHT_LED = 21
 LEFT_SW = 19
 RIGHT_SW = 26
+
 FLASH_TIME = 1
 TIMEOUT_TIME = 2
 
 switchLEDMap = { LEFT_LED:LEFT_SW, RIGHT_LED:RIGHT_SW }
+
+sequence = []
+gameOver = False
 
 #Set the pins as inputs and outputs
 GPIO.setup(LEFT_LED, GPIO.OUT)
@@ -23,58 +27,59 @@ GPIO.setup(RIGHT_LED, GPIO.OUT)
 GPIO.setup(LEFT_SW, GPIO.IN, GPIO.PUD_UP)
 GPIO.setup(RIGHT_SW, GPIO.IN, GPIO.PUD_UP)
 
-sequence = []
-gameOver = False
+print ("Welcome to Simon Says!")
 
 while gameOver == False:
-  #Add a new step to the flashing sequence
-  led = randint(0, 1)
-  if led == 0:
-    sequence.append(LEFT_LED)
-  else:
-    sequence.append(RIGHT_LED)
+    #Add a new step to the flashing sequence
+    randNum = randint(0, 1)
 
-  #Flash the sequence for the player
-  for i in sequence:
-    print ("Playing Sequence...")
-    time.sleep(FLASH_TIME)
-    GPIO.output(i, GPIO.HIGH)
-    time.sleep(FLASH_TIME)
-    GPIO.output(i, GPIO.LOW)
+    if randNum == 0:
+        sequence.append(LEFT_LED)
+    else:
+        sequence.append(RIGHT_LED)
 
-  for i in sequence:
-    btnPressed = 0
+    #Flash the sequence for the player
+    for i in sequence:
+        print ("Playing Sequence...")
+        time.sleep(FLASH_TIME)
+        GPIO.output(i, GPIO.HIGH)
+        time.sleep(FLASH_TIME)
+        GPIO.output(i, GPIO.LOW)
 
-    #Read inputs
-    GPIO.add_event_detect(LEFT_SW, GPIO.FALLING)
-    GPIO.add_event_detect(RIGHT_SW, GPIO.FALLING)
+    #Read in the player's sequence
+    for i in sequence:
+        btnPressed = 0
 
-    startTime = time.time()
+        #Read inputs
+        GPIO.add_event_detect(LEFT_SW, GPIO.FALLING)
+        GPIO.add_event_detect(RIGHT_SW, GPIO.FALLING)
 
-    while True:
-      if GPIO.event_detected(LEFT_SW):
-        print ("Left Button Pressed")
-        btnPressed = LEFT_SW
-        break
-      if GPIO.event_detected(RIGHT_SW):
-        print ("Right Button Pressed")
-        btnPressed = RIGHT_SW
-        break
-      if time.time() - startTime > TIMEOUT_TIME:
-        print ("Time is up!!")
-        gameOver = True
-        break
-      time.sleep(0.0001)
+        startTime = time.time()
 
-    GPIO.remove_event_detect(LEFT_SW)
-    GPIO.remove_event_detect(RIGHT_SW)
+        while btnPressed == 0:
+            if GPIO.event_detected(LEFT_SW):
+                print ("Left Button Pressed")
+                btnPressed = LEFT_SW
+            if GPIO.event_detected(RIGHT_SW):
+                print ("Right Button Pressed")
+                btnPressed = RIGHT_SW
+            if time.time() - startTime > TIMEOUT_TIME:
+                print ("Time is up!!")
+                gameOver = True
+                break
+            time.sleep(0.0001)
 
-    time.sleep(0.5)
+        GPIO.remove_event_detect(LEFT_SW)
+        GPIO.remove_event_detect(RIGHT_SW)
 
-    #Does input match the sequence step?
-    if btnPressed != switchLEDMap[i]:
-      print ("Game Over")
-      gameOver = True
-      break
+        time.sleep(0.5)
+        
+        #Does input match the sequence step?
+        if btnPressed != switchLEDMap[i]:
+            print ("Game Over")
+            gameOver = True
+            break
+
+print ("Thanks for playing!")
 
 GPIO.cleanup()
