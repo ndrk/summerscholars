@@ -9,8 +9,8 @@ GPIO.setmode(GPIO.BCM)
 
 #Defind the pins that are used for the LEDs and switches
 numLEDs = 3
-leds = [16, 12, 21]
-switches = [19, 13, 26]
+leds = [16, 12]
+switches = [19, 13]
 FLASH_TIME = 0.5
 TIMEOUT_TIME = 2
 
@@ -67,7 +67,7 @@ while gameOver == False:
             GPIO.remove_event_detect(j)
 
         time.sleep(FLASH_TIME)
-        
+
         #Does input match the sequence step?
         if btnPressed != switchLEDMap[i]:
             print ("Game Over")
@@ -77,7 +77,7 @@ while gameOver == False:
             GPIO.output(i, GPIO.HIGH)
             time.sleep(FLASH_TIME)
             GPIO.output(i, GPIO.LOW)
-    
+
 for i in range(3):
     for j in leds:
         GPIO.output(j, GPIO.HIGH)
